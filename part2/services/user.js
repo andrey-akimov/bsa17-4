@@ -1,71 +1,43 @@
-const users = [{
-	id: 1,
-	name: 'Jim Beam',
-	email: 'jim@gmail.com'
-},{
-	id: 2,
-	name: 'Johnnie Walker',
-	email: 'johnnie@gmail.com'
-},{
-	id: 3,
-	name: 'Jack Daniel\'s',
-	email: 'jack@gmail.com'
-},{
-	id: 4,
-	name: 'Hankey Bannister',
-	email: 'hankey@gmail.com'
-}];
-
-function findUser(id){
-	const err = null;
-	if (typeof id === 'undefined'){
-		err = new Error('id is undefined');
+class User {
+	constructor(id, name, mail) {
+		this.id = id;
+		this.name = name;
+		this.mail = mail;
 	}
-
-	let index;
-	const user = users.find((el, ind) => {
-		if (el.id === id){
-			index = ind;
-			return true;
-		} else {
-			return false;
-		}
-	});
-	return {user, index, err};
 }
 
+// a little alcohol :)
+let users = [
+	new User(0, 'Jim Beam', 'jim@gmail.com'),
+	new User(1, 'Johnnie Walker', 'johnnie@gmail.com'),
+	new User(2, 'Jack Daniel\'s', 'jack@gmail.com'),
+	new User(3, 'Hankey Bannister', 'hankey@gmail.com'),
+];
+
 module.exports = {
-	findAll: (callback) => {
-		callback(null, users);
+	newUser (data) {
+		return new User(Date.now(), data.name, data.mail);
 	},
 
-	findOne: (id, callback) => {
-		const {err, user} = findUser(id);
-		callback(err, user);
+	findUser (id) {
+		return users.find(user => user.id == id);
 	},
 
-	add: (user, callback) => {
-		if (typeof user.id !== 'undefined'){
-			users.push(user);
-			callback(null);
-		} else {
-			callback(new Error('user doesnt have id'));
+	addUser (user) {
+		users.push(user);
+	},
+
+	deleteUser (id) {
+		users = users.filter(user => user.id !== id);
+	},
+
+	updateUser (id, props) {
+		let updatedUser = module.exports.findUser(id);
+		for (let prop in props) {
+			if (updatedUser.hasOwnProperty(prop)) {
+				updatedUser[prop] = props[prop];
+			}
 		}
-	},
-
-	findOneAndDelete: (id, callback) => {
-		let {err, user, index} = findUser(id);
-		if (typeof index !== 'undefined'){
-			users.splice(index, 1);
-		} else {
-			err = new Error('no users with such index');
-		}
-		callback(err);
-	},
-
-	findOneAndUpdate: (id, user, callback) => {
-		const {err, index} = findUser(id);
-		users[index] = Object.assign(users[index], user);
-		callback(err);
+		return updatedUser;
 	}
 };
