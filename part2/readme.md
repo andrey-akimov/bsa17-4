@@ -1,7 +1,7 @@
 ### Setup instructions
 1. npm install
-1. Start server
-1. In browser go to localhost:1428
+2. Start server
+3. In browser go to localhost:1428
 
 ### Users
 | Request | Descripton |
